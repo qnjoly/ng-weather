@@ -4,9 +4,10 @@ import {ActivatedRoute} from '@angular/router';
 import {Forecast} from './forecast.type';
 
 @Component({
-  selector: 'app-forecasts-list',
-  templateUrl: './forecasts-list.component.html',
-  styleUrls: ['./forecasts-list.component.css']
+    selector: 'app-forecasts-list',
+    templateUrl: './forecasts-list.component.html',
+    styleUrls: ['./forecasts-list.component.css'],
+    standalone: false
 })
 export class ForecastsListComponent {
 

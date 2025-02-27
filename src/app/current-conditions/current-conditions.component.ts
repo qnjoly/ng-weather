@@ -5,9 +5,10 @@ import {Router} from "@angular/router";
 import {ConditionsAndZip} from '../conditions-and-zip.type';
 
 @Component({
-  selector: 'app-current-conditions',
-  templateUrl: './current-conditions.component.html',
-  styleUrls: ['./current-conditions.component.css']
+    selector: 'app-current-conditions',
+    templateUrl: './current-conditions.component.html',
+    styleUrls: ['./current-conditions.component.css'],
+    standalone: false
 })
 export class CurrentConditionsComponent {
 
