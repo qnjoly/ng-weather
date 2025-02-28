@@ -1,14 +1,19 @@
 import { Component, inject, Signal } from '@angular/core';
 import { WeatherService } from '../weather.service';
 import { LocationService } from '../location.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ConditionsAndZip } from '../conditions-and-zip.type';
+import { NgFor, DecimalPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-current-conditions',
-  templateUrl: './current-conditions.component.html',
-  styleUrls: ['./current-conditions.component.css'],
-  standalone: false,
+    selector: 'app-current-conditions',
+    templateUrl: './current-conditions.component.html',
+    styleUrls: ['./current-conditions.component.css'],
+    imports: [
+        NgFor,
+        RouterLink,
+        DecimalPipe,
+    ],
 })
 export class CurrentConditionsComponent {
   private weatherService = inject(WeatherService);

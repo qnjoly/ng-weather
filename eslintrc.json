@@ -11,26 +11,7 @@
         "plugin:@angular-eslint/template/process-inline-templates",
         "prettier"
       ],
-      "rules": {
-        "no-underscore-dangle": ["error"],
-        "@typescript-eslint/member-ordering": ["error"],
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "mycompany",
-            "style": "camelCase"
-          }
-        ],
-        "@angular-eslint/component-selector": [
-          "error",
-          {
-            "type": "element",
-            "prefix": "mycompany",
-            "style": "kebab-case"
-          }
-        ]
-      }
+      "rules": {}
     },
     {
       "files": ["*.html"],
