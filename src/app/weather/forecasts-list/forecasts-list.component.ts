@@ -1,19 +1,14 @@
+import { DatePipe, DecimalPipe, NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { WeatherService } from '../weather.service';
+import { WeatherService } from '../../shared/services/weather.service';
 import { Forecast } from './forecast.type';
-import { NgFor, DecimalPipe, DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-forecasts-list',
-    templateUrl: './forecasts-list.component.html',
-    styleUrls: ['./forecasts-list.component.css'],
-    imports: [
-        NgFor,
-        RouterLink,
-        DecimalPipe,
-        DatePipe,
-    ],
+  selector: 'app-forecasts-list',
+  templateUrl: './forecasts-list.component.html',
+  styleUrls: ['./forecasts-list.component.css'],
+  imports: [NgFor, RouterLink, DecimalPipe, DatePipe],
 })
 export class ForecastsListComponent {
   zipcode: string;

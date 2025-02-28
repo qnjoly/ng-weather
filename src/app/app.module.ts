@@ -1,34 +1,33 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-import { AppComponent } from './app.component';
-import { ZipcodeEntryComponent } from './zipcode-entry/zipcode-entry.component';
-import { LocationService } from './location.service';
-import { ForecastsListComponent } from './forecasts-list/forecasts-list.component';
-import { WeatherService } from './weather.service';
-import { CurrentConditionsComponent } from './current-conditions/current-conditions.component';
-import { MainPageComponent } from './main-page/main-page.component';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { routing } from './app.routing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { AppComponent } from './app.component';
+import { routing } from './app.routing';
+import { LocationService } from './shared/services/location.service';
+import { WeatherService } from './shared/services/weather.service';
+import { ForecastsListComponent } from './weather/forecasts-list/forecasts-list.component';
+import { CurrentConditionsComponent } from './weather/main-page/components/current-conditions/current-conditions.component';
+import { ZipcodeEntryComponent } from './weather/main-page/components/zipcode-entry/zipcode-entry.component';
+import { MainPageComponent } from './weather/main-page/main-page.component';
 
 @NgModule({
-    declarations: [AppComponent],
-    bootstrap: [AppComponent],
-    imports: [
-        BrowserModule,
-        FormsModule,
-        RouterModule,
-        routing,
-        ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
-        ZipcodeEntryComponent,
-        ForecastsListComponent,
-        CurrentConditionsComponent,
-        MainPageComponent,
-    ],
-    providers: [LocationService, WeatherService, provideHttpClient(withInterceptorsFromDi())],
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    RouterModule,
+    routing,
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
+    ZipcodeEntryComponent,
+    ForecastsListComponent,
+    CurrentConditionsComponent,
+    MainPageComponent,
+  ],
+  providers: [LocationService, WeatherService, provideHttpClient(withInterceptorsFromDi())],
 })
 export class AppModule {}

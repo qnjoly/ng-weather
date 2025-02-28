@@ -2,9 +2,9 @@ import { Injectable, Signal, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
-import { CurrentConditions } from './current-conditions/current-conditions.type';
-import { ConditionsAndZip } from './conditions-and-zip.type';
-import { Forecast } from './forecasts-list/forecast.type';
+import { ConditionsAndZip } from '../../conditions-and-zip.type';
+import { Forecast } from '../../weather/forecasts-list/forecast.type';
+import { CurrentConditions } from '../../weather/main-page/components/current-conditions/current-conditions.type';
 
 @Injectable()
 export class WeatherService {

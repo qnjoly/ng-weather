@@ -1,7 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { ForecastsListComponent } from './forecasts-list/forecasts-list.component';
-import { MainPageComponent } from './main-page/main-page.component';
+import { RouterModule, Routes } from '@angular/router';
+import { ForecastsListComponent } from './weather/forecasts-list/forecasts-list.component';
+import { MainPageComponent } from './weather/main-page/main-page.component';
 
 const appRoutes: Routes = [
   {
