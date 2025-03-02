@@ -1,4 +1,4 @@
-import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { AsyncPipe, DatePipe, DecimalPipe, NgFor } from '@angular/common';
 import { Component, inject, input, Signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';

@@ -1,34 +1,39 @@
 import { HttpEvent, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Injectable, signal, WritableSignal } from '@angular/core';
-import { interval, Observable, of } from 'rxjs';
+import { Injectable, linkedSignal, WritableSignal } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { RequestCacheEntry } from '../types/request-cache.type';
 import { environment } from '../../../environments/environment';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { map, filter, take, switchMap, tap } from 'rxjs/operators';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { map, filter, take, switchMap, tap, shareReplay } from 'rxjs/operators';
+import { STORAGE_KEY_REQUESTS_CACHE } from '../constants/storage.constants';
+import { fromStorage } from '../helpers/storage.helpers';
 
 @Injectable()
 export class RequestCacheService {
   /**
+   * An observable of storage events for the requests cache key
+   */
+  private readonly storageEvents$ = fromStorage(STORAGE_KEY_REQUESTS_CACHE, {});
+
+  /**
+   * A signal of storage events for the requests cache key
+   */
+  private readonly storageEvents = toSignal(this.storageEvents$);
+
+  /**
    * Cache to store the responses
    */
-  private readonly cache: WritableSignal<Record<string, RequestCacheEntry>> = signal({});
+  private readonly cache: WritableSignal<Record<string, RequestCacheEntry>> = linkedSignal(() => this.storageEvents());
 
   /**
    * An observable of the cache
    */
-  private readonly cache$ = toObservable(this.cache);
+  private readonly cache$ = toObservable(this.cache).pipe(shareReplay(1));
 
   /**
    * Max age of the cache
    */
   private static readonly MAX_AGE = environment.cache.maxAge;
-
-  constructor() {
-    // Clean the cache every maxAge milliseconds
-    interval(RequestCacheService.MAX_AGE).subscribe({
-      next: () => this.cleanExpiredCache(),
-    });
-  }
 
   public get(req: HttpRequest<unknown>, type: 'observable'): Observable<HttpResponse<unknown> | undefined>;
   public get(req: HttpRequest<unknown>, type: 'instant'): HttpResponse<unknown> | undefined;
@@ -68,10 +73,20 @@ export class RequestCacheService {
     const url = req.urlWithParams;
     const newEntry = { url, response, initiated: Date.now(), inProgress: false };
     // We update the cache with the new entry
+    this.updateCache(url, newEntry);
+  }
+
+  /**
+   * Update the cache
+   * @param key key to update (url of the request)
+   * @param value cache entry to update
+   */
+  private updateCache(key: string, value: RequestCacheEntry): void {
     this.cache.update((c) => {
-      c[url] = newEntry;
+      c[key] = value;
       return { ...c };
     });
+    localStorage.setItem(STORAGE_KEY_REQUESTS_CACHE, JSON.stringify(this.cache()));
   }
 
   /**
@@ -84,10 +99,7 @@ export class RequestCacheService {
     return of(void 0).pipe(
       tap(() => {
         // We declare the request as in progress
-        this.cache.update((c) => {
-          c[req.urlWithParams] = { url: req.urlWithParams, initiated: Date.now(), inProgress: true };
-          return { ...c };
-        });
+        this.updateCache(req.urlWithParams, { url: req.urlWithParams, initiated: Date.now(), inProgress: true });
       }),
       switchMap(() =>
         // We send the request

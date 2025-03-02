@@ -2,7 +2,7 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } fr
 import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { RequestCacheService } from '../services/request-cache.service';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class CacheApiInterceptor implements HttpInterceptor {
@@ -25,7 +25,7 @@ export class CacheApiInterceptor implements HttpInterceptor {
       .get(req, 'observable')
       .pipe(
         switchMap((cachedResponse) =>
-          cachedResponse ? of(cachedResponse) : this.requestCacheService.cacheRequest(req, next),
+          cachedResponse ? of(new HttpResponse(cachedResponse)) : this.requestCacheService.cacheRequest(req, next),
         ),
       );
   }

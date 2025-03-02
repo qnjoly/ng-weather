@@ -10,12 +10,12 @@ import { routing } from './app.routing';
 import { LocationService } from './shared/services/location.service';
 import { WeatherService } from './shared/services/weather.service';
 import { ForecastsListComponent } from './weather/forecasts-list/forecasts-list.component';
-import { CurrentConditionsComponent } from './weather/main-page/components/current-conditions/current-conditions.component';
-import { ZipcodeEntryComponent } from './weather/main-page/components/zipcode-entry/zipcode-entry.component';
+import { ZipcodeEntryComponent } from './weather/main-page/zipcode-entry/zipcode-entry.component';
 import { MainPageComponent } from './weather/main-page/main-page.component';
 import { LocationWeatherService } from './weather/services/location-weather.service';
 import { RequestCacheService } from './shared/services/request-cache.service';
 import { CacheApiInterceptor } from './shared/interceptors/cache-api.interceptor';
+import { CurrentConditionsComponent } from './weather/main-page/current-conditions/current-conditions.component';
 
 const provideInterceptors = () => {
   return [{ provide: HTTP_INTERCEPTORS, useClass: CacheApiInterceptor, multi: true }];

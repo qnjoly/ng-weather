@@ -1,7 +1,7 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { forkJoin, Observable, of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { LocationService } from '../../shared/services/location.service';
 import { WeatherService } from '../../shared/services/weather.service';
 import { CustomCurrentConditions } from '../../shared/types/current-conditions.type';
@@ -28,7 +28,7 @@ export class LocationWeatherService {
             catchError(() => of(null)),
           );
         }),
-      );
+      ).pipe(catchError(() => of([])));
     }),
     map((currentConditions: (ConditionsAndZip | null)[]) => currentConditions.filter((cc) => cc !== null)),
   );
@@ -42,10 +42,9 @@ export class LocationWeatherService {
   /**
    * Remove a location from the list of locations
    * @param zip The zip code of the location to remove
-   * @param index The index of the location to remove
    */
-  public removeLocation(zip?: string, index?: number): void {
-    this.locationService.removeLocation(zip, index);
+  public removeLocation(zip?: string): void {
+    this.locationService.removeLocation(zip);
   }
 
   /**
