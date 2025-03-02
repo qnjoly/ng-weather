@@ -12,5 +12,8 @@
         <a [routerLink]="['/forecast', location.zip]">Show 5-day forecast for {{ location.data.name }}</a>
       </p>
     </div>
+    <div>
+      <img [src]="location.data.iconUrl" alt="" />
+    </div>
   </div>
 }

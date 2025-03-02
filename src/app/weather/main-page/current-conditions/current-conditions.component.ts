@@ -21,11 +21,6 @@ export class CurrentConditionsComponent {
   public readonly showForecast = output<string>();
 
   /**
-   * Emit an event to remove a location
-   */
-  public readonly removeLocation = output<string>();
-
-  /**
    * Show the forecast for a location
    * @param zipcode the zip code of the location to show the forecast for
    */
