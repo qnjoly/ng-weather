@@ -5,6 +5,7 @@ import { TabComponent } from './tab/tab.component';
 @Component({
   selector: 'app-tab-group',
   templateUrl: './tab-group.component.html',
+  styleUrl: './tab-group.component.css',
   imports: [NgTemplateOutlet],
 })
 export class TabGroupComponent {

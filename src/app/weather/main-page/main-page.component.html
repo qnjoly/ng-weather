@@ -3,7 +3,7 @@
   @if (currentConditionsByZip(); as currentConditionsByZip) {
     <app-tab-group (onTabClosed)="remove($event)">
       @for (currentCondition of currentConditionsByZip; track currentConditionsByZip.zip) {
-        <app-tab [closeable]="true" [title]="currentCondition.zip">
+        <app-tab [closeable]="true" [title]="currentCondition.data?.name + ' (' + currentCondition.zip + ')'">
           <app-current-conditions [currentConditionByZip]="currentCondition" (showForecast)="showForecast($event)" />
         </app-tab>
       }

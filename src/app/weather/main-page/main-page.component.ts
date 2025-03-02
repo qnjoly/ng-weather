@@ -5,13 +5,12 @@ import { ZipcodeEntryComponent } from './zipcode-entry/zipcode-entry.component';
 import { TabComponent } from '../../shared/components/tab-group/tab/tab.component';
 import { TabGroupComponent } from '../../shared/components/tab-group/tab-group.component';
 import { Router } from '@angular/router';
-import { JsonPipe } from '@angular/common';
 import { CurrentConditionsComponent } from './current-conditions/current-conditions.component';
 
 @Component({
   selector: 'app-main-page',
   templateUrl: './main-page.component.html',
-  imports: [TabGroupComponent, TabComponent, ZipcodeEntryComponent, CurrentConditionsComponent, JsonPipe],
+  imports: [TabGroupComponent, TabComponent, ZipcodeEntryComponent, CurrentConditionsComponent],
 })
 export class MainPageComponent {
   private readonly locationWeatherService = inject(LocationWeatherService);
