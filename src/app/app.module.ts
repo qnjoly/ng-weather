@@ -1,4 +1,4 @@
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -14,6 +14,12 @@ import { CurrentConditionsComponent } from './weather/main-page/components/curre
 import { ZipcodeEntryComponent } from './weather/main-page/components/zipcode-entry/zipcode-entry.component';
 import { MainPageComponent } from './weather/main-page/main-page.component';
 import { LocationWeatherService } from './weather/services/location-weather.service';
+import { RequestCacheService } from './shared/services/request-cache.service';
+import { CacheApiInterceptor } from './shared/interceptors/cache-api.interceptor';
+
+const provideInterceptors = () => {
+  return [{ provide: HTTP_INTERCEPTORS, useClass: CacheApiInterceptor, multi: true }];
+};
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,6 +35,13 @@ import { LocationWeatherService } from './weather/services/location-weather.serv
     CurrentConditionsComponent,
     MainPageComponent,
   ],
-  providers: [LocationService, WeatherService, LocationWeatherService, provideHttpClient(withInterceptorsFromDi())],
+  providers: [
+    LocationService,
+    WeatherService,
+    LocationWeatherService,
+    RequestCacheService,
+    provideHttpClient(withInterceptorsFromDi()),
+    provideInterceptors(),
+  ],
 })
 export class AppModule {}

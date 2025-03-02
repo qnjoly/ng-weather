@@ -43,7 +43,6 @@ export class LocationService {
    */
   public removeLocation(zipcode?: string, index: number = -1): void {
     this.locationsSignal.update((locations) => {
-      console.log('LocationService - removeLocation', zipcode, index);
       if (!zipcode && index !== -1) {
         locations.splice(index, 1);
       } else {

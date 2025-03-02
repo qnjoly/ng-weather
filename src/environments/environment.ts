@@ -14,4 +14,7 @@ export const environment = {
       url: 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/',
     },
   },
+  cache: {
+    maxAge: 60000,
+  },
 };
