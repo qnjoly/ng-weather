@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
-import { LocationService } from '../../../../shared/services/location.service';
+import { Component, inject } from '@angular/core';
+import { LocationWeatherService } from '../../../services/location-weather.service';
 
 @Component({
   selector: 'app-zipcode-entry',
   templateUrl: './zipcode-entry.component.html',
 })
 export class ZipcodeEntryComponent {
-  constructor(private service: LocationService) {}
+  private readonly locationWeatherService = inject(LocationWeatherService);
 
-  addLocation(zipcode: string) {
-    this.service.addLocation(zipcode);
+  protected addLocation(zipcode: string) {
+    this.locationWeatherService.addLocation(zipcode);
   }
 }

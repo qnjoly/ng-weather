@@ -1,3 +1,7 @@
+export type CustomForecast = Omit<Forecast, 'list'> & { list: CustomWeatherList[] };
+
+export type CustomWeatherList = List & { iconUrl: string };
+
 export interface Forecast {
   city: City;
   cod: string;

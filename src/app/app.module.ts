@@ -13,6 +13,7 @@ import { ForecastsListComponent } from './weather/forecasts-list/forecasts-list.
 import { CurrentConditionsComponent } from './weather/main-page/components/current-conditions/current-conditions.component';
 import { ZipcodeEntryComponent } from './weather/main-page/components/zipcode-entry/zipcode-entry.component';
 import { MainPageComponent } from './weather/main-page/main-page.component';
+import { LocationWeatherService } from './weather/services/location-weather.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,6 +29,6 @@ import { MainPageComponent } from './weather/main-page/main-page.component';
     CurrentConditionsComponent,
     MainPageComponent,
   ],
-  providers: [LocationService, WeatherService, provideHttpClient(withInterceptorsFromDi())],
+  providers: [LocationService, WeatherService, LocationWeatherService, provideHttpClient(withInterceptorsFromDi())],
 })
 export class AppModule {}

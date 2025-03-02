@@ -13,4 +13,4 @@ const appRoutes: Routes = [
     component: ForecastsListComponent,
   },
 ];
-export const routing: ModuleWithProviders<any> = RouterModule.forRoot(appRoutes, {});
+export const routing: ModuleWithProviders<any> = RouterModule.forRoot(appRoutes, { bindToComponentInputs: true });

@@ -1,30 +1,61 @@
-import { Injectable } from '@angular/core';
-import { WeatherService } from './weather.service';
-
-export const LOCATIONS: string = 'locations';
+import { effect, Injectable, signal, WritableSignal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { Observable } from 'rxjs';
+import { STORAGE_KEY_LOCATIONS } from '../constants/storage.constants';
 
 @Injectable()
 export class LocationService {
-  locations: string[] = [];
+  /**
+   * Used to store the list of locations
+   */
+  private readonly locationsSignal: WritableSignal<string[]> = signal(
+    JSON.parse(localStorage.getItem(STORAGE_KEY_LOCATIONS)) ?? [],
+  );
 
-  constructor(private weatherService: WeatherService) {
-    let locString = localStorage.getItem(LOCATIONS);
-    if (locString) this.locations = JSON.parse(locString);
-    for (let loc of this.locations) this.weatherService.addCurrentConditions(loc);
+  /**
+   * The list of locations
+   */
+  public readonly locations = this.locationsSignal.asReadonly();
+
+  /**
+   * An observable of the list of locations
+   */
+  public readonly locations$: Observable<string[]> = toObservable(this.locations);
+
+  constructor() {
+    // Save the locations to local storage whenever the list changes
+    effect(() => {
+      localStorage.setItem(STORAGE_KEY_LOCATIONS, JSON.stringify(this.locations()));
+    });
   }
 
-  addLocation(zipcode: string) {
-    this.locations.push(zipcode);
-    localStorage.setItem(LOCATIONS, JSON.stringify(this.locations));
-    this.weatherService.addCurrentConditions(zipcode);
+  /**
+   * Add a location to the list of locations
+   * @param zipcode The zip code of the location to add
+   */
+  public addLocation(zipcode: string): void {
+    this.locationsSignal.update((locations) => [...locations, zipcode]);
   }
 
-  removeLocation(zipcode: string) {
-    let index = this.locations.indexOf(zipcode);
-    if (index !== -1) {
-      this.locations.splice(index, 1);
-      localStorage.setItem(LOCATIONS, JSON.stringify(this.locations));
-      this.weatherService.removeCurrentConditions(zipcode);
-    }
+  /**
+   * Remove a location from the list of locations
+   * @param zipcode The zip code of the location to remove
+   */
+  public removeLocation(zipcode: string, index: number = -1): void {
+    this.locationsSignal.update((locations) => {
+      if (index !== -1) {
+        if (locations[index] === zipcode) {
+          locations.splice(index, 1);
+        }
+        return [...locations];
+      }
+
+      const i = locations.indexOf(zipcode);
+      if (i !== -1) {
+        locations.splice(index, 1);
+      }
+
+      return [...locations];
+    });
   }
 }

@@ -13,8 +13,8 @@
       </p>
     </div>
     <div>
-      <span class="close" (click)="locationService.removeLocation(location.zip)">&times;</span>
-      <img [src]="weatherService.getWeatherIcon(location.data.weather[0].id)" />
+      <span class="close" (click)="remove($event, location.zip)">&times;</span>
+      <img [src]="location.data.iconUrl" alt="" />
     </div>
   </div>
 </div>

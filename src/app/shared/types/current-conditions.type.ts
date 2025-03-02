@@ -1,3 +1,5 @@
+export type CustomCurrentConditions = CurrentConditions & { iconUrl: string };
+
 export interface CurrentConditions {
   coord: Coord;
   weather: Weather[];
