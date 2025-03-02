@@ -41,18 +41,16 @@ export class LocationService {
    * Remove a location from the list of locations
    * @param zipcode The zip code of the location to remove
    */
-  public removeLocation(zipcode: string, index: number = -1): void {
+  public removeLocation(zipcode?: string, index: number = -1): void {
     this.locationsSignal.update((locations) => {
-      if (index !== -1) {
-        if (locations[index] === zipcode) {
+      console.log('LocationService - removeLocation', zipcode, index);
+      if (!zipcode && index !== -1) {
+        locations.splice(index, 1);
+      } else {
+        const i = locations.indexOf(zipcode);
+        if (i !== -1) {
           locations.splice(index, 1);
         }
-        return [...locations];
-      }
-
-      const i = locations.indexOf(zipcode);
-      if (i !== -1) {
-        locations.splice(index, 1);
       }
 
       return [...locations];

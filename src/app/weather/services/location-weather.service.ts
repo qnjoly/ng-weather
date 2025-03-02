@@ -44,7 +44,7 @@ export class LocationWeatherService {
    * @param zip The zip code of the location to remove
    * @param index The index of the location to remove
    */
-  public removeLocation(zip: string, index?: number): void {
+  public removeLocation(zip?: string, index?: number): void {
     this.locationService.removeLocation(zip, index);
   }
 

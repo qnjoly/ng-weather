@@ -1,4 +1,12 @@
 <div class="container-fluid">
   <app-zipcode-entry> </app-zipcode-entry>
-  <app-current-conditions></app-current-conditions>
+  @if (currentConditionsByZip(); as currentConditionsByZip) {
+    <app-tab-group (onTabClosed)="remove($event)">
+      @for (currentCondition of currentConditionsByZip; track currentConditionsByZip) {
+        <app-tab [closeable]="true" [title]="currentCondition.zip">
+          <app-current-conditions [currentConditionByZip]="currentCondition" (showForecast)="showForecast($event)" />
+        </app-tab>
+      }
+    </app-tab-group>
+  }
 </div>

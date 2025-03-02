@@ -1,0 +1,19 @@
+<div>
+  <ul>
+    @for (tab of tabs(); track tab; let index = $index) {
+      <li>
+        <button type="button" (click)="selectTab(index)">
+          {{ tab.title() }}
+        </button>
+        @if (tab.closeable()) {
+          <button type="button" (click)="closeTab(index)">&times;</button>
+        }
+      </li>
+    }
+  </ul>
+  <div>
+    @if (tabs()[selectedIndex()]?.content()) {
+      <ng-container *ngTemplateOutlet="tabs()[selectedIndex()]?.content()"></ng-container>
+    }
+  </div>
+</div>
