@@ -1,4 +1,4 @@
-import { CurrentConditions } from '../../shared/types/current-conditions.type';
+import { CurrentConditions } from '@shared/types/weather/current-conditions.type';
 
 export interface ConditionsAndZip {
   zip: string;

@@ -1,5 +1,5 @@
 @if (currentConditionByZip(); as location) {
-  <div (click)="show(location.zip)" class="well flex">
+  <div class="well flex">
     <div>
       <h3>{{ location.data.name }} ({{ location.zip }})</h3>
       <h4>Current conditions: {{ location.data.weather[0].main }}</h4>

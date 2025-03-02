@@ -1,7 +1,7 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { RequestCacheService } from '../services/request-cache.service';
+import { RequestCacheService } from '@shared/services/request-cache.service';
 import { switchMap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
@@ -21,13 +21,12 @@ export class CacheApiInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
     // If the request is cacheable, we check if we have a cached response else we send the request
-    return this.requestCacheService
-      .get(req, 'observable')
-      .pipe(
-        switchMap((cachedResponse) =>
-          cachedResponse ? of(new HttpResponse(cachedResponse)) : this.requestCacheService.cacheRequest(req, next),
-        ),
-      );
+    return this.requestCacheService.get(req, 'observable').pipe(
+      switchMap((cachedResponse) => {
+        console.log('CacheApiInterceptor: ', cachedResponse);
+        return cachedResponse ? of(new HttpResponse(cachedResponse)) : this.requestCacheService.cacheRequest(req, next);
+      }),
+    );
   }
 
   /**

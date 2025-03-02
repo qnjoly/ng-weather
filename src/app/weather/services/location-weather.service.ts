@@ -1,11 +1,11 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { forkJoin, Observable, of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { LocationService } from '../../shared/services/location.service';
-import { WeatherService } from '../../shared/services/weather.service';
-import { CustomCurrentConditions } from '../../shared/types/current-conditions.type';
-import { ConditionsAndZip } from '../types/conditions-and-zip.type';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { LocationService } from '@shared/services/location.service';
+import { WeatherService } from '@shared/services/weather.service';
+import { CustomCurrentConditions } from '@shared/types/weather/current-conditions.type';
+import { ConditionsAndZip } from '@weather/types/conditions-and-zip.type';
 
 @Injectable()
 export class LocationWeatherService {
@@ -18,6 +18,7 @@ export class LocationWeatherService {
    */
   private readonly currentConditions$: Observable<ConditionsAndZip[]> = this.locationService.locations$.pipe(
     switchMap((locations: string[]) => {
+      console.log('LocationWeatherService - locations', locations);
       return forkJoin(
         locations.map((location: string) => {
           return this.weatherService.getCurrentConditionsWithIcon(location).pipe(

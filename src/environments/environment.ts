@@ -15,6 +15,6 @@ export const environment = {
     },
   },
   cache: {
-    maxAge: 60000,
+    maxAge: 2 * 60 * 60 * 1000,
   },
 };

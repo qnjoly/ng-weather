@@ -1,19 +1,23 @@
 import { HttpEvent, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Injectable, linkedSignal, WritableSignal } from '@angular/core';
+import { inject, Injectable, InjectionToken, linkedSignal, WritableSignal } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { RequestCacheEntry } from '../types/request-cache.type';
-import { environment } from '../../../environments/environment';
+import { RequestCacheEntry } from '@shared/types/cache/request-cache.type';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { map, filter, take, switchMap, tap, shareReplay } from 'rxjs/operators';
-import { STORAGE_KEY_REQUESTS_CACHE } from '../constants/storage.constants';
-import { fromStorage } from '../helpers/storage.helpers';
+import { STORAGE_KEY_CACHE_MAX_AGE, STORAGE_KEY_CACHE_REQUESTS } from '@shared/constants/storage.constants';
+import { fromStorage } from '@shared/helpers/storage.helpers';
+import { ConfigurationCache } from '@shared/types/cache/configuration.type';
+
+export const CONF_CACHE = new InjectionToken<ConfigurationCache>('CONF_CACHE');
 
 @Injectable()
 export class RequestCacheService {
+  private readonly conf: ConfigurationCache = inject(CONF_CACHE);
+
   /**
    * An observable of storage events for the requests cache key
    */
-  private readonly storageEvents$ = fromStorage(STORAGE_KEY_REQUESTS_CACHE, {});
+  private readonly storageEvents$ = fromStorage(STORAGE_KEY_CACHE_REQUESTS, {});
 
   /**
    * A signal of storage events for the requests cache key
@@ -31,9 +35,31 @@ export class RequestCacheService {
   private readonly cache$ = toObservable(this.cache).pipe(shareReplay(1));
 
   /**
-   * Max age of the cache
+   * An observable of storage events for the maximum age of the cache
    */
-  private static readonly MAX_AGE = environment.cache.maxAge;
+  private readonly maxAgeEvents$ = fromStorage<string>(STORAGE_KEY_CACHE_MAX_AGE, this.conf.maxAge.toString());
+
+  /**
+   * A signal of storage events for the maximum age of the cache
+   */
+  private readonly maxAgeEvents = toSignal(
+    this.maxAgeEvents$.pipe(
+      map((v) => {
+        const maxAge = parseInt(v, 10);
+        return isNaN(maxAge) ? this.conf.maxAge : maxAge;
+      }),
+    ),
+  );
+
+  /**
+   * The maximum age of the cache
+   */
+  private readonly maxAge = linkedSignal(() => this.maxAgeEvents());
+
+  /**
+   * Expose the max age as a readonly signal
+   */
+  public readonly getMaxAge = this.maxAge.asReadonly();
 
   public get(req: HttpRequest<unknown>, type: 'observable'): Observable<HttpResponse<unknown> | undefined>;
   public get(req: HttpRequest<unknown>, type: 'instant'): HttpResponse<unknown> | undefined;
@@ -86,7 +112,7 @@ export class RequestCacheService {
       c[key] = value;
       return { ...c };
     });
-    localStorage.setItem(STORAGE_KEY_REQUESTS_CACHE, JSON.stringify(this.cache()));
+    localStorage.setItem(STORAGE_KEY_CACHE_REQUESTS, JSON.stringify(this.cache()));
   }
 
   /**
@@ -137,7 +163,16 @@ export class RequestCacheService {
    * @returns a boolean
    */
   private isExpired(entry: RequestCacheEntry): boolean {
-    const expiredAt = entry.initiated + RequestCacheService.MAX_AGE;
+    const expiredAt = entry.initiated + this.maxAge();
     return expiredAt < Date.now();
+  }
+
+  /**
+   * Set the maximum age of the cache
+   * @param maxAge maximum age in milliseconds
+   */
+  public setMaxAge(maxAge: number): void {
+    this.maxAge.set(maxAge);
+    localStorage.setItem(STORAGE_KEY_CACHE_MAX_AGE, this.maxAge().toString());
   }
 }

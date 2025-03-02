@@ -1,18 +1,19 @@
-import { effect, Injectable, linkedSignal, WritableSignal } from '@angular/core';
+import { Injectable, linkedSignal, WritableSignal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
-import { STORAGE_KEY_LOCATIONS } from '../constants/storage.constants';
-import { fromStorage } from '../helpers/storage.helpers';
+import { STORAGE_KEY_LOCATIONS } from '@shared/constants/storage.constants';
+import { fromStorage } from '@shared/helpers/storage.helpers';
+import { delay } from 'rxjs/operators';
 
 @Injectable()
 export class LocationService {
   /**
    * An observable of storage events for the locations key
    */
-  private readonly storageEvents$ = fromStorage<string[]>(STORAGE_KEY_LOCATIONS, []);
+  private readonly storageEvents$ = fromStorage<string[]>(STORAGE_KEY_LOCATIONS, [], delay(1000));
 
   /**
-   * A signal of storage events for the locations key
+   * A signal of storage events for the locations key (used delay to help synchronize the locations with local storage)
    */
   private readonly storageEvents = toSignal(this.storageEvents$);
 
@@ -31,13 +32,6 @@ export class LocationService {
    */
   public readonly locations$: Observable<string[]> = toObservable(this.locations);
 
-  constructor() {
-    // Save the locations to local storage whenever the list changes
-    effect(() => {
-      localStorage.setItem(STORAGE_KEY_LOCATIONS, JSON.stringify(this.locations()));
-    });
-  }
-
   /**
    * Add a location to the list of locations
    * @param zipcode The zip code of the location to add
@@ -49,6 +43,7 @@ export class LocationService {
     }
     // Update the list of locations
     this.locationsSignal.update((locations) => [...locations, zipcode]);
+    localStorage.setItem(STORAGE_KEY_LOCATIONS, JSON.stringify(this.locations()));
   }
 
   /**
@@ -66,5 +61,6 @@ export class LocationService {
       // Return the updated list of locations
       return [...locations];
     });
+    localStorage.setItem(STORAGE_KEY_LOCATIONS, JSON.stringify(this.locations()));
   }
 }

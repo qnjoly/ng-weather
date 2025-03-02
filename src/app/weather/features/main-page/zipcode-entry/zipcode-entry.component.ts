@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { LocationWeatherService } from '../../services/location-weather.service';
+import { LocationWeatherService } from '@weather/services/location-weather.service';
 
 @Component({
   selector: 'app-zipcode-entry',

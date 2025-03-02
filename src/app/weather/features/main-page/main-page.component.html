@@ -1,10 +1,10 @@
 <div class="container-fluid">
-  <app-zipcode-entry> </app-zipcode-entry>
+  <app-zipcode-entry></app-zipcode-entry>
   @if (currentConditionsByZip(); as currentConditionsByZip) {
     <app-tab-group (onTabClosed)="remove($event)">
-      @for (currentCondition of currentConditionsByZip; track currentConditionsByZip.zip) {
+      @for (currentCondition of currentConditionsByZip; track currentCondition.zip) {
         <app-tab [closeable]="true" [title]="currentCondition.data?.name + ' (' + currentCondition.zip + ')'">
-          <app-current-conditions [currentConditionByZip]="currentCondition" (showForecast)="showForecast($event)" />
+          <app-current-conditions [currentConditionByZip]="currentCondition" />
         </app-tab>
       }
     </app-tab-group>

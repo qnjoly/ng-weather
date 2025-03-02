@@ -1,1 +1,8 @@
+<p>Current Max Age: {{ maxAge() | prettyMs }}</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <label for="maxAge">Max Age</label>
+  <input type="number" id="maxAge" name="maxAge" formControlName="maxAge" />
+  <button type="submit">Submit</button>
+</form>
+<hr />
 <router-outlet></router-outlet>

@@ -1,9 +1,9 @@
-import { AsyncPipe, DatePipe, DecimalPipe, NgFor } from '@angular/common';
+import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { Component, inject, input, Signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { WeatherService } from '../../shared/services/weather.service';
+import { WeatherService } from '@shared/services/weather.service';
 
 @Component({
   selector: 'app-forecasts-list',

@@ -1,18 +1,16 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
-import { CurrentConditions, CustomCurrentConditions } from '../types/current-conditions.type';
-import { CustomForecast, Forecast } from '../types/forecast.type';
+import { CurrentConditions, CustomCurrentConditions } from '@shared/types/weather/current-conditions.type';
+import { CustomForecast, Forecast } from '@shared/types/weather/forecast.type';
+import { ConfigurationApiWeather } from '@shared/types/weather/configuration.type';
+
+export const CONF_API_WEATHER = new InjectionToken<ConfigurationApiWeather>('CONF_API_WEATHER');
 
 @Injectable()
 export class WeatherService {
-  private static readonly URL = environment.weather.api.url;
-  private static readonly APPID = environment.weather.api.appid;
-  private static readonly ICON_URL = environment.weather.icon.url;
-
+  private readonly conf: ConfigurationApiWeather = inject(CONF_API_WEATHER);
   private readonly http: HttpClient = inject(HttpClient);
 
   /**
@@ -21,7 +19,7 @@ export class WeatherService {
    */
   public getCurrentConditions(zipcode: string): Observable<CurrentConditions> {
     return this.http.get<CurrentConditions>(
-      `${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`,
+      `${this.conf.api.url}/weather?zip=${zipcode},us&units=imperial&APPID=${this.conf.api.appid}`,
     );
   }
 
@@ -33,7 +31,7 @@ export class WeatherService {
   public getForecast(zipcode: string): Observable<Forecast> {
     //
     return this.http.get<Forecast>(
-      `${WeatherService.URL}/forecast/daily?zip=${zipcode},us&units=imperial&cnt=5&APPID=${WeatherService.APPID}`,
+      `${this.conf.api.url}/forecast/daily?zip=${zipcode},us&units=imperial&cnt=5&APPID=${this.conf.api.appid}`,
     );
   }
 
@@ -71,12 +69,13 @@ export class WeatherService {
    * @returns a string with the url of the icon
    */
   public getWeatherIcon(id: number): string {
-    if (id >= 200 && id <= 232) return WeatherService.ICON_URL + 'art_storm.png';
-    else if (id >= 501 && id <= 511) return WeatherService.ICON_URL + 'art_rain.png';
-    else if (id === 500 || (id >= 520 && id <= 531)) return WeatherService.ICON_URL + 'art_light_rain.png';
-    else if (id >= 600 && id <= 622) return WeatherService.ICON_URL + 'art_snow.png';
-    else if (id >= 801 && id <= 804) return WeatherService.ICON_URL + 'art_clouds.png';
-    else if (id === 741 || id === 761) return WeatherService.ICON_URL + 'art_fog.png';
-    else return WeatherService.ICON_URL + 'art_clear.png';
+    const iconUrl = this.conf.icon.url;
+    if (id >= 200 && id <= 232) return iconUrl + 'art_storm.png';
+    else if (id >= 501 && id <= 511) return iconUrl + 'art_rain.png';
+    else if (id === 500 || (id >= 520 && id <= 531)) return iconUrl + 'art_light_rain.png';
+    else if (id >= 600 && id <= 622) return iconUrl + 'art_snow.png';
+    else if (id >= 801 && id <= 804) return iconUrl + 'art_clouds.png';
+    else if (id === 741 || id === 761) return iconUrl + 'art_fog.png';
+    else return iconUrl + 'art_clear.png';
   }
 }
