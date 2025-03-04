@@ -8,17 +8,17 @@ import { delay } from 'rxjs/operators';
 @Injectable()
 export class LocationService {
   /**
-   * An observable of storage events for the locations key
+   * An observable of storage events for the locations key (used delay to help synchronize with local storage)
    */
   private readonly storageEvents$ = fromStorage<string[]>(STORAGE_KEY_LOCATIONS, [], delay(1000));
 
   /**
-   * A signal of storage events for the locations key (used delay to help synchronize the locations with local storage)
+   * A signal of storage events for the locations key
    */
   private readonly storageEvents = toSignal(this.storageEvents$);
 
   /**
-   * Used to store sync the locations with local storage and provide a signal for the locations
+   * Used to sync the locations with local storage and then provide a signal for the locations
    */
   private readonly locationsSignal: WritableSignal<string[]> = linkedSignal(() => this.storageEvents());
 

@@ -33,10 +33,6 @@ const provideInterceptors = () => {
     PrettyMsPipe,
     routing,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
-    ZipcodeEntryComponent,
-    ForecastsListComponent,
-    CurrentConditionsComponent,
-    MainPageComponent,
   ],
   providers: [
     LocationService,

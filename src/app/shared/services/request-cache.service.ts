@@ -25,7 +25,7 @@ export class RequestCacheService {
   private readonly storageEvents = toSignal(this.storageEvents$);
 
   /**
-   * Cache to store the responses
+   * Used to sync the cache with local storage and then provide a signal to store the requests cache
    */
   private readonly cache: WritableSignal<Record<string, RequestCacheEntry>> = linkedSignal(() => this.storageEvents());
 
@@ -44,6 +44,7 @@ export class RequestCacheService {
    */
   private readonly maxAgeEvents = toSignal(
     this.maxAgeEvents$.pipe(
+      // Transform the value to a number
       map((v) => {
         const maxAge = parseInt(v, 10);
         return isNaN(maxAge) ? this.conf.maxAge : maxAge;
@@ -52,15 +53,21 @@ export class RequestCacheService {
   );
 
   /**
-   * The maximum age of the cache
+   * Used to sync the maximum age with local storage and then provide a signal to edit it
    */
-  private readonly maxAge = linkedSignal(() => this.maxAgeEvents());
+  private readonly maxAge: WritableSignal<number> = linkedSignal(() => this.maxAgeEvents());
 
   /**
    * Expose the max age as a readonly signal
    */
   public readonly getMaxAge = this.maxAge.asReadonly();
 
+  /**
+   * Get a cached response
+   * @param req request to get
+   * @param type type of the response to get
+   * @returns an observable of the response if type is 'observable', the response if type is 'instant', or undefined if the cache is empty or expired
+   */
   public get(req: HttpRequest<unknown>, type: 'observable'): Observable<HttpResponse<unknown> | undefined>;
   public get(req: HttpRequest<unknown>, type: 'instant'): HttpResponse<unknown> | undefined;
   public get(
@@ -77,7 +84,7 @@ export class RequestCacheService {
     if (this.isExpired(cached)) {
       return isObservable ? of(undefined) : undefined;
     }
-    // If the cache is in progress, we return the cached response when it is done
+    // If the cache is in progress, we return the cached response when it is done (used to prevent multiple requests for the same resource when it is loading)
     if (isObservable && cached.inProgress) {
       return this.cache$.pipe(
         map((c) => c[req.urlWithParams]),
@@ -138,23 +145,6 @@ export class RequestCacheService {
         }
       }),
     );
-  }
-
-  /**
-   * Operation to clean the expired cache
-   */
-  private cleanExpiredCache(): void {
-    this.cache.update((c: Record<string, RequestCacheEntry>) => {
-      // For each entry, we check if it is expired and delete it if it is
-      for (const url of Object.keys(c)) {
-        const entry = c[url];
-        if (this.isExpired(entry)) {
-          delete c[url];
-        }
-      }
-      // We return the new cache
-      return { ...c };
-    });
   }
 
   /**

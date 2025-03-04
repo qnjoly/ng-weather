@@ -18,9 +18,10 @@ export class LocationWeatherService {
    */
   private readonly currentConditions$: Observable<ConditionsAndZip[]> = this.locationService.locations$.pipe(
     switchMap((locations: string[]) => {
-      console.log('LocationWeatherService - locations', locations);
+      // Parallelize the requests for the current conditions of all locations
       return forkJoin(
         locations.map((location: string) => {
+          // Retrieve the current conditions for a location
           return this.weatherService.getCurrentConditionsWithIcon(location).pipe(
             map((currentConditions: CustomCurrentConditions) => ({
               data: currentConditions,
@@ -31,6 +32,7 @@ export class LocationWeatherService {
         }),
       ).pipe(catchError(() => of([])));
     }),
+    // Filter calls that failed
     map((currentConditions: (ConditionsAndZip | null)[]) => currentConditions.filter((cc) => cc !== null)),
   );
 
@@ -39,20 +41,4 @@ export class LocationWeatherService {
    * @returns A signal of the current conditions for all locationss
    */
   public readonly getCurrentConditions: Signal<ConditionsAndZip[]> = toSignal(this.currentConditions$);
-
-  /**
-   * Remove a location from the list of locations
-   * @param zip The zip code of the location to remove
-   */
-  public removeLocation(zip?: string): void {
-    this.locationService.removeLocation(zip);
-  }
-
-  /**
-   * Add a location to the list of locations
-   * @param zip The zip code of the location to add
-   */
-  public addLocation(zip: string): void {
-    this.locationService.addLocation(zip);
-  }
 }

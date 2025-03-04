@@ -1,6 +1,17 @@
-<div class="well">
+<form class="well" [formGroup]="form" (submit)="submit()">
   <h2>Enter a zipcode:</h2>
-  <input type="text" #zipcode placeholder="Zipcode" class="form-control" />
+  <input type="text" formControlName="zipcode" placeholder="Zipcode" class="form-control" />
+  @if (form.controls.zipcode.invalid && (form.controls.zipcode.touched || form.controls.zipcode.dirty)) {
+    @if (form.controls.zipcode.errors?.required) {
+      <p>Zipcode is required.</p>
+    }
+    @if (form.controls.zipcode.errors?.pattern) {
+      <p>Please enter a valid zipcode.</p>
+    }
+    @if (form.controls.zipcode.errors?.locationAlreadyExists) {
+      <p>Location already in list.</p>
+    }
+  }
   <br />
-  <button class="btn btn-primary" (click)="addLocation(zipcode.value)">Add location</button>
-</div>
+  <button class="btn btn-primary" type="submit">Add location</button>
+</form>

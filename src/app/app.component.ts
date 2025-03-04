@@ -12,9 +12,13 @@ export class AppComponent {
   private readonly cacheRequestService = inject(RequestCacheService);
   private readonly fb = inject(FormBuilder);
 
+  /**
+   * The current max age of the cache
+   */
   protected readonly maxAge = this.cacheRequestService.getMaxAge;
 
   constructor() {
+    // Update the form value when the max age changes
     effect(() => {
       this.form.patchValue({ maxAge: this.maxAge() });
     });

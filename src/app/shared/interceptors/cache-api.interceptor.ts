@@ -21,12 +21,13 @@ export class CacheApiInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
     // If the request is cacheable, we check if we have a cached response else we send the request
-    return this.requestCacheService.get(req, 'observable').pipe(
-      switchMap((cachedResponse) => {
-        console.log('CacheApiInterceptor: ', cachedResponse);
-        return cachedResponse ? of(new HttpResponse(cachedResponse)) : this.requestCacheService.cacheRequest(req, next);
-      }),
-    );
+    return this.requestCacheService
+      .get(req, 'observable')
+      .pipe(
+        switchMap((cachedResponse) =>
+          cachedResponse ? of(new HttpResponse(cachedResponse)) : this.requestCacheService.cacheRequest(req, next),
+        ),
+      );
   }
 
   /**
