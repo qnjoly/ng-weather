@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/components/tab-group/tab-group.component.css"],
+  "sourcesContent": ["ul {\r\n  display: flex;\r\n  flex-wrap: wrap;\r\n  list-style: none;\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\nli {\r\n  background-color: #617aa0;\r\n  color: #fff;\r\n  border: solid 1px #e3e3e3;\r\n  padding: 5px 10px;\r\n  display: flex;\r\n  gap: 5px;\r\n}\r\n\r\nbutton {\r\n  background: none;\r\n  color: inherit;\r\n  border: none;\r\n  padding: 0;\r\n  font: inherit;\r\n  cursor: pointer;\r\n}\r\n"],
+  "mappings": ";AAAA;AACE,WAAS;AACT,aAAW;AACX,cAAY;AACZ,WAAS;AACT,UAAQ;AACV;AAEA;AACE,oBAAkB;AAClB,SAAO;AACP,UAAQ,MAAM,IAAI;AAClB,WAAS,IAAI;AACb,WAAS;AACT,OAAK;AACP;AAEA;AACE,cAAY;AACZ,SAAO;AACP,UAAQ;AACR,WAAS;AACT,QAAM;AACN,UAAQ;AACV;",
+  "names": []
+}

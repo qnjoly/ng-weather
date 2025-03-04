@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/weather/features/forecasts-list/forecasts-list.component.css"],
+  "sourcesContent": [".icon {\n  width: 45px;\n  height: 45px;\n  position: absolute;\n  right: 20px;\n  top: -2px;\n}\n"],
+  "mappings": ";AAAA,CAAC;AACC,SAAO;AACP,UAAQ;AACR,YAAU;AACV,SAAO;AACP,OAAK;AACP;",
+  "names": []
+}
