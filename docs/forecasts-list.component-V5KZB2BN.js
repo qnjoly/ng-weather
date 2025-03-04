@@ -10,7 +10,7 @@ import {
   input,
   switchMap,
   toObservable
-} from "./chunk-CFAGC2EV.js";
+} from "./chunk-7T4MAIBC.js";
 
 // angular:jit:template:file:src\app\weather\features\forecasts-list\forecasts-list.component.html
 var forecasts_list_component_default = `<div>\r
@@ -70,4 +70,4 @@ ForecastsListComponent = __decorate([
 export {
   ForecastsListComponent
 };
-//# sourceMappingURL=forecasts-list.component-XJIR3S74.js.map
+//# sourceMappingURL=forecasts-list.component-V5KZB2BN.js.map

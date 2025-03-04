@@ -5,7 +5,7 @@ import {
   LocationWeatherService,
   ReactiveFormsModule,
   Validators
-} from "./chunk-PXOBUFGD.js";
+} from "./chunk-XUK2OPRI.js";
 import {
   Component,
   ContentChildren,
@@ -15,22 +15,25 @@ import {
   Output,
   RouterLink,
   ViewChild,
+  WeatherService,
   booleanAttribute,
+  catchError,
   contentChildren,
   inject,
   input,
   map,
   model,
+  of,
   output,
   take,
   viewChild
-} from "./chunk-CFAGC2EV.js";
+} from "./chunk-7T4MAIBC.js";
 
 // angular:jit:template:file:src\app\weather\features\main-page\main-page.component.html
 var main_page_component_default = `<div class="container-fluid">\r
-  <app-zipcode-entry></app-zipcode-entry>\r
+  <app-zipcode-entry (addZipcode)="addLocation($event)"></app-zipcode-entry>\r
   @if (currentConditionsByZip(); as currentConditionsByZip) {\r
-    <app-tab-group (onTabClosed)="remove($event)">\r
+    <app-tab-group (onTabClosed)="removeLocationByIndex($event)">\r
       @for (currentCondition of currentConditionsByZip; track currentCondition.zip) {\r
         <app-tab [closeable]="true" [title]="currentCondition.data?.name + ' (' + currentCondition.zip + ')'">\r
           <app-current-conditions [currentConditionByZip]="currentCondition" />\r
@@ -42,7 +45,7 @@ var main_page_component_default = `<div class="container-fluid">\r
 `;
 
 // angular:jit:template:file:src\app\weather\features\main-page\zipcode-entry\zipcode-entry.component.html
-var zipcode_entry_component_default = '<form class="well" [formGroup]="form" (submit)="submit()">\n  <h2>Enter a zipcode:</h2>\n  <input type="text" formControlName="zipcode" placeholder="Zipcode" class="form-control" />\n  @if (form.controls.zipcode.invalid && (form.controls.zipcode.touched || form.controls.zipcode.dirty)) {\n    @if (form.controls.zipcode.errors?.required) {\n      <p>Zipcode is required.</p>\n    }\n    @if (form.controls.zipcode.errors?.pattern) {\n      <p>Please enter a valid zipcode.</p>\n    }\n    @if (form.controls.zipcode.errors?.locationAlreadyExists) {\n      <p>Location already in list.</p>\n    }\n  }\n  <br />\n  <button class="btn btn-primary" type="submit">Add location</button>\n</form>\n';
+var zipcode_entry_component_default = '<form class="well" [formGroup]="form" (submit)="submit()">\n  <h2>Enter a zipcode:</h2>\n  <input type="text" formControlName="zipcode" placeholder="Zipcode" class="form-control" />\n  @if (form.controls.zipcode.invalid && (form.controls.zipcode.touched || form.controls.zipcode.dirty)) {\n    @if (form.controls.zipcode.errors?.required) {\n      <p>Zipcode is required.</p>\n    }\n    @if (form.controls.zipcode.errors?.pattern) {\n      <p>Please enter a valid zipcode.</p>\n    }\n    @if (form.controls.zipcode.errors?.locationAlreadyExists) {\n      <p>Location already in list.</p>\n    }\n    @if (form.controls.zipcode.errors?.weatherNotAvailable) {\n      <p>Weather not available for this location.</p>\n    }\n  }\n  <br />\n  <button class="btn btn-primary" type="submit">Add location</button>\n</form>\n';
 
 // src/app/shared/validators/location.validator.ts
 var LocationValidator = class {
@@ -58,6 +61,18 @@ var LocationValidator = class {
   }
 };
 
+// src/app/shared/validators/weather.validator.ts
+var WeatherValidator = class {
+  /**
+   * Check if the weather is available for the location
+   */
+  static checkIfWeatherAvailable(weatherService) {
+    return (control) => {
+      return weatherService.getCurrentConditions(control.value).pipe(map((forecast) => forecast ? null : { weatherNotAvailable: true }), catchError(() => of({ weatherNotAvailable: true })));
+    };
+  }
+};
+
 // src/app/weather/features/main-page/zipcode-entry/zipcode-entry.component.ts
 var __decorate = function(decorators, target, key, desc) {
   var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -68,12 +83,17 @@ var __decorate = function(decorators, target, key, desc) {
 var ZipcodeEntryComponent = class ZipcodeEntryComponent2 {
   constructor() {
     this.locationService = inject(LocationService);
+    this.weatherService = inject(WeatherService);
     this.fb = inject(FormBuilder);
+    this.addZipcode = output();
     this.form = this.fb.group({
       zipcode: [
         "",
         [Validators.required, Validators.pattern(/^\d{5}(?:-\d{4})?$/)],
-        [LocationValidator.checkIfLocationAlreadyRegistered(this.locationService)]
+        [
+          LocationValidator.checkIfLocationAlreadyRegistered(this.locationService),
+          WeatherValidator.checkIfWeatherAvailable(this.weatherService)
+        ]
       ]
     });
   }
@@ -81,7 +101,12 @@ var ZipcodeEntryComponent = class ZipcodeEntryComponent2 {
     if (!this.form.valid)
       return;
     const { zipcode } = this.form.value;
-    this.locationService.addLocation(zipcode);
+    this.addZipcode.emit(zipcode);
+  }
+  static {
+    this.propDecorators = {
+      addZipcode: [{ type: Output, args: ["addZipcode"] }]
+    };
   }
 };
 ZipcodeEntryComponent = __decorate([
@@ -251,10 +276,18 @@ var MainPageComponent = class MainPageComponent2 {
   }
   /**
    * Remove a location from the list of locations
+   * @param index The index of the location to remove
    */
-  remove(index) {
+  removeLocationByIndex(index) {
     const zip = this.currentConditionsByZip()[index].zip;
     this.locationService.removeLocation(zip);
+  }
+  /**
+   * Add a location to the list of locations
+   * @param zipcode The zipcode to add
+   */
+  addLocation(zipcode) {
+    this.locationService.addLocation(zipcode);
   }
 };
 MainPageComponent = __decorate5([
@@ -267,4 +300,4 @@ MainPageComponent = __decorate5([
 export {
   MainPageComponent
 };
-//# sourceMappingURL=main-page.component-O53GNBJR.js.map
+//# sourceMappingURL=main-page.component-K7WMY7LB.js.map

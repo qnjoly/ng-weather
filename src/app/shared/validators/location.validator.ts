@@ -1,6 +1,6 @@
 import { AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { LocationService } from '../services/location.service';
 
 export class LocationValidator {

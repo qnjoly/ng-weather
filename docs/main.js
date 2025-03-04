@@ -8,7 +8,7 @@ import {
   STORAGE_KEY_CACHE_REQUESTS,
   Validators,
   fromStorage
-} from "./chunk-PXOBUFGD.js";
+} from "./chunk-XUK2OPRI.js";
 import {
   APP_INITIALIZER,
   ApplicationRef,
@@ -38,6 +38,7 @@ import {
   WeatherService,
   __spreadProps,
   __spreadValues,
+  catchError,
   concat,
   core_exports,
   createPlatformFactory,
@@ -70,7 +71,7 @@ import {
   ɵɵngDeclareInjectable,
   ɵɵngDeclareInjector,
   ɵɵngDeclareNgModule
-} from "./chunk-CFAGC2EV.js";
+} from "./chunk-7T4MAIBC.js";
 
 // node_modules/@angular/compiler/fesm2022/compiler.mjs
 var _SELECTOR_REGEXP = new RegExp(
@@ -26406,11 +26407,11 @@ var RequestCacheService = class RequestCacheService2 {
       this.updateCache(req.urlWithParams, { url: req.urlWithParams, initiated: Date.now(), inProgress: true });
     }), switchMap(() => (
       // We send the request
-      next.handle(req)
+      next.handle(req).pipe(catchError((error) => {
+        return of(new HttpResponse(error));
+      }))
     )), tap((event) => {
-      if (event instanceof HttpResponse) {
-        this.set(req, event);
-      }
+      this.set(req, event);
     }));
   }
   /**
@@ -26479,11 +26480,11 @@ AppComponent = __decorate2([
 var appRoutes = [
   {
     path: "",
-    loadComponent: () => import("./main-page.component-O53GNBJR.js").then((m) => m.MainPageComponent)
+    loadComponent: () => import("./main-page.component-K7WMY7LB.js").then((m) => m.MainPageComponent)
   },
   {
     path: "forecast/:zipcode",
-    loadComponent: () => import("./forecasts-list.component-XJIR3S74.js").then((m) => m.ForecastsListComponent)
+    loadComponent: () => import("./forecasts-list.component-V5KZB2BN.js").then((m) => m.ForecastsListComponent)
   }
 ];
 var routing = RouterModule.forRoot(appRoutes, { bindToComponentInputs: true });

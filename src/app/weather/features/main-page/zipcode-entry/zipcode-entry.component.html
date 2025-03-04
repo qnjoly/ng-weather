@@ -11,6 +11,9 @@
     @if (form.controls.zipcode.errors?.locationAlreadyExists) {
       <p>Location already in list.</p>
     }
+    @if (form.controls.zipcode.errors?.weatherNotAvailable) {
+      <p>Weather not available for this location.</p>
+    }
   }
   <br />
   <button class="btn btn-primary" type="submit">Add location</button>

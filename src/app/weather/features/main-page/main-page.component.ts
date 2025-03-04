@@ -24,9 +24,18 @@ export class MainPageComponent {
 
   /**
    * Remove a location from the list of locations
+   * @param index The index of the location to remove
    */
-  protected remove(index: number): void {
+  protected removeLocationByIndex(index: number): void {
     const zip = this.currentConditionsByZip()[index].zip;
     this.locationService.removeLocation(zip);
+  }
+
+  /**
+   * Add a location to the list of locations
+   * @param zipcode The zipcode to add
+   */
+  protected addLocation(zipcode: string): void {
+    this.locationService.addLocation(zipcode);
   }
 }

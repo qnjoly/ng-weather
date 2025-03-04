@@ -1,7 +1,7 @@
 <div class="container-fluid">
-  <app-zipcode-entry></app-zipcode-entry>
+  <app-zipcode-entry (addZipcode)="addLocation($event)"></app-zipcode-entry>
   @if (currentConditionsByZip(); as currentConditionsByZip) {
-    <app-tab-group (onTabClosed)="remove($event)">
+    <app-tab-group (onTabClosed)="removeLocationByIndex($event)">
       @for (currentCondition of currentConditionsByZip; track currentCondition.zip) {
         <app-tab [closeable]="true" [title]="currentCondition.data?.name + ' (' + currentCondition.zip + ')'">
           <app-current-conditions [currentConditionByZip]="currentCondition" />

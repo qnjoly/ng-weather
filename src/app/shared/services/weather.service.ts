@@ -29,7 +29,6 @@ export class WeatherService {
    * @returns an observable of type Forecast
    */
   public getForecast(zipcode: string): Observable<Forecast> {
-    //
     return this.http.get<Forecast>(
       `${this.conf.api.url}/forecast/daily?zip=${zipcode},us&units=imperial&cnt=5&APPID=${this.conf.api.appid}`,
     );

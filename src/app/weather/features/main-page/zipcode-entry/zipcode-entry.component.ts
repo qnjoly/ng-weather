@@ -1,7 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LocationService } from '@shared/services/location.service';
 import { LocationValidator } from '@shared/validators/location.validator';
+import { WeatherService } from '@shared/services/weather.service';
+import { WeatherValidator } from '@shared/validators/weather.validator';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-zipcode-entry',
@@ -10,7 +13,13 @@ import { LocationValidator } from '@shared/validators/location.validator';
 })
 export class ZipcodeEntryComponent {
   private readonly locationService = inject(LocationService);
+  private readonly weatherService = inject(WeatherService);
   private readonly fb = inject(FormBuilder);
+
+  /**
+   * Event emitted when a zipcode is added
+   */
+  public readonly addZipcode = output<string>();
 
   /**
    * The form to add a location
@@ -19,7 +28,10 @@ export class ZipcodeEntryComponent {
     zipcode: [
       '',
       [Validators.required, Validators.pattern(/^\d{5}(?:-\d{4})?$/)],
-      [LocationValidator.checkIfLocationAlreadyRegistered(this.locationService)],
+      [
+        LocationValidator.checkIfLocationAlreadyRegistered(this.locationService),
+        WeatherValidator.checkIfWeatherAvailable(this.weatherService),
+      ],
     ],
   });
 
@@ -28,6 +40,6 @@ export class ZipcodeEntryComponent {
     if (!this.form.valid) return;
     // Add the location to the list of locations
     const { zipcode } = this.form.value;
-    this.locationService.addLocation(zipcode);
+    this.addZipcode.emit(zipcode);
   }
 }

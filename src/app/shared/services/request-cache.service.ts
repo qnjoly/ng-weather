@@ -3,7 +3,7 @@ import { inject, Injectable, InjectionToken, linkedSignal, WritableSignal } from
 import { Observable, of } from 'rxjs';
 import { RequestCacheEntry } from '@shared/types/cache/request-cache.type';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { map, filter, take, switchMap, tap, shareReplay } from 'rxjs/operators';
+import { map, filter, take, switchMap, tap, shareReplay, catchError } from 'rxjs/operators';
 import { STORAGE_KEY_CACHE_MAX_AGE, STORAGE_KEY_CACHE_REQUESTS } from '@shared/constants/storage.constants';
 import { fromStorage } from '@shared/helpers/storage.helpers';
 import { ConfigurationCache } from '@shared/types/cache/configuration.type';
@@ -128,7 +128,7 @@ export class RequestCacheService {
    * @param next next handler
    * @returns an observable of type HttpEvent
    */
-  public cacheRequest(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+  public cacheRequest(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpResponse<unknown>> {
     return of(void 0).pipe(
       tap(() => {
         // We declare the request as in progress
@@ -136,13 +136,15 @@ export class RequestCacheService {
       }),
       switchMap(() =>
         // We send the request
-        next.handle(req),
+        next.handle(req).pipe(
+          catchError((error: HttpEvent<unknown>) => {
+            return of(new HttpResponse(error as HttpResponse<unknown>));
+          }),
+        ),
       ),
-      tap((event) => {
+      tap((event: HttpResponse<unknown>) => {
         // When the response is received, we cache it
-        if (event instanceof HttpResponse) {
-          this.set(req, event);
-        }
+        this.set(req, event);
       }),
     );
   }
